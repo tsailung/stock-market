@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metapro.stock.mapper.StockQuoteMapper">
+  <resultMap id="BaseResultMap" type="com.metapro.stock.entity.StockQuote">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="incre_per" jdbcType="DECIMAL" property="increPer" />
+    <result column="increase" jdbcType="DECIMAL" property="increase" />
+    <result column="today_start_pri" jdbcType="DECIMAL" property="todayStartPri" />
+    <result column="yestod_end_pri" jdbcType="DECIMAL" property="yestodEndPri" />
+    <result column="now_pri" jdbcType="DECIMAL" property="nowPri" />
+    <result column="today_max" jdbcType="DECIMAL" property="todayMax" />
+    <result column="today_min" jdbcType="DECIMAL" property="todayMin" />
+    <result column="competitive_pri" jdbcType="DECIMAL" property="competitivePri" />
+    <result column="reserve_pri" jdbcType="DECIMAL" property="reservePri" />
+    <result column="tra_number" jdbcType="DECIMAL" property="traNumber" />
+    <result column="tra_amount" jdbcType="DECIMAL" property="traAmount" />
+    <result column="req_date" jdbcType="DATE" property="reqDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, name, incre_per, increase, today_start_pri, yestod_end_pri, now_pri, today_max, 
+    today_min, competitive_pri, reserve_pri, tra_number, tra_amount, req_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_stock_quote
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.metapro.stock.entity.StockQuote">
+    insert into t_stock_quote (id, code, name, 
+      incre_per, increase, today_start_pri, 
+      yestod_end_pri, now_pri, today_max, 
+      today_min, competitive_pri, reserve_pri, 
+      tra_number, tra_amount, req_date
+      )
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{increPer,jdbcType=DECIMAL}, #{increase,jdbcType=DECIMAL}, #{todayStartPri,jdbcType=DECIMAL}, 
+      #{yestodEndPri,jdbcType=DECIMAL}, #{nowPri,jdbcType=DECIMAL}, #{todayMax,jdbcType=DECIMAL}, 
+      #{todayMin,jdbcType=DECIMAL}, #{competitivePri,jdbcType=DECIMAL}, #{reservePri,jdbcType=DECIMAL}, 
+      #{traNumber,jdbcType=DECIMAL}, #{traAmount,jdbcType=DECIMAL}, #{reqDate,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.metapro.stock.entity.StockQuote">
+    insert into t_stock_quote
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="increPer != null">
+        incre_per,
+      </if>
+      <if test="increase != null">
+        increase,
+      </if>
+      <if test="todayStartPri != null">
+        today_start_pri,
+      </if>
+      <if test="yestodEndPri != null">
+        yestod_end_pri,
+      </if>
+      <if test="nowPri != null">
+        now_pri,
+      </if>
+      <if test="todayMax != null">
+        today_max,
+      </if>
+      <if test="todayMin != null">
+        today_min,
+      </if>
+      <if test="competitivePri != null">
+        competitive_pri,
+      </if>
+      <if test="reservePri != null">
+        reserve_pri,
+      </if>
+      <if test="traNumber != null">
+        tra_number,
+      </if>
+      <if test="traAmount != null">
+        tra_amount,
+      </if>
+      <if test="reqDate != null">
+        req_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="increPer != null">
+        #{increPer,jdbcType=DECIMAL},
+      </if>
+      <if test="increase != null">
+        #{increase,jdbcType=DECIMAL},
+      </if>
+      <if test="todayStartPri != null">
+        #{todayStartPri,jdbcType=DECIMAL},
+      </if>
+      <if test="yestodEndPri != null">
+        #{yestodEndPri,jdbcType=DECIMAL},
+      </if>
+      <if test="nowPri != null">
+        #{nowPri,jdbcType=DECIMAL},
+      </if>
+      <if test="todayMax != null">
+        #{todayMax,jdbcType=DECIMAL},
+      </if>
+      <if test="todayMin != null">
+        #{todayMin,jdbcType=DECIMAL},
+      </if>
+      <if test="competitivePri != null">
+        #{competitivePri,jdbcType=DECIMAL},
+      </if>
+      <if test="reservePri != null">
+        #{reservePri,jdbcType=DECIMAL},
+      </if>
+      <if test="traNumber != null">
+        #{traNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="traAmount != null">
+        #{traAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="reqDate != null">
+        #{reqDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+</mapper>
