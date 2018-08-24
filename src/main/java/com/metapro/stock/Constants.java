@@ -8,4 +8,7 @@ public class Constants {
 
     public final static SimpleDateFormat    DTFORMATT_LINE = new SimpleDateFormat("yyyy-MM-dd");
     public final static SimpleDateFormat    DTFORMATT_EMPTY = new SimpleDateFormat("yyyyMMdd");
+
+    public final static String              DELAY_EVENT_ROUTE_KEY = "testDelayEvent4";
+    public final static String              IMMEDIATELY_EVENT_ROUTE_KEY = "testImmediatelyEvent";
 }

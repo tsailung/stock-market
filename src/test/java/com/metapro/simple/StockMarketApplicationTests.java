@@ -16,58 +16,85 @@
 
 package com.metapro.simple;
 
+import com.alibaba.fastjson.JSON;
+import com.metapro.stock.Constants;
 import com.metapro.stock.StockMarketApplication;
-import com.metapro.stock.service.impl.GatewayServiceImpl;
+import com.metapro.stock.dto.MQTransferDataDto;
+import com.metapro.stock.mq.MQService;
+import com.metapro.stock.mq.impl.MQServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
-import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.*;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Tests for {@link StockMarketApplication}.
- * 
+ *
  * @author Dave Syer
  * @author Phillip Webb
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(GatewayServiceImpl.class)
 public class StockMarketApplicationTests {
 
-	@Autowired
-	GatewayServiceImpl gatewayServiceImpl;
+//	@Autowired
+//	GatewayServiceImpl gatewayServiceImpl;
+//
+//	@Test
+//	public void testRequestStockstar(){
+//		gatewayServiceImpl.requestStockstar();
+//	}
 
-	@Test
-	public void testRequestStockstar(){
-		gatewayServiceImpl.requestStockstar();
-	}
+    @Resource
+    MQService mqService;
+
+    @Test
+    public void mqSend() {
+        try {
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+
+            MQTransferDataDto transferData = new MQTransferDataDto();
+            transferData.setCount((int)(Math.random() * 100));
+            transferData.setData(UUID.randomUUID().toString());
+            transferData.setSendTime(new Date());
+            mqService.send(JSON.toJSONString(transferData), Constants.IMMEDIATELY_EVENT_ROUTE_KEY);
+            transferData = new MQTransferDataDto();
+            transferData.setCount((int)(Math.random() * 100));
+            transferData.setData(UUID.randomUUID().toString());
+            transferData.setSendTime(new Date());
+            mqService.sendWithDelay(JSON.toJSONString(transferData), Constants.DELAY_EVENT_ROUTE_KEY, 5);
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 
-	@Configuration
-	@Import({DispatcherServletAutoConfiguration.class,
-			WebMvcAutoConfiguration.class,
-			HttpMessageConvertersAutoConfiguration.class,
-			PropertyPlaceholderAutoConfiguration.class })
-	@ComponentScan(basePackages = { "com.metapro.stock" })
-	@MapperScan(basePackages = "com.metapro.stock")
-	public static class TestApplication {
+    @Configuration
+	@Import({MQServiceImpl.class})
+    @ComponentScan(basePackages = {"com.metapro.stock.mq", "com.metapro.stock.config"})
+    @MapperScan(basePackages = "com.metapro.stock")
+    public static class TestApplication {
 
-		public static void main(String[] args) throws Exception {
-			SpringApplication.run(StockMarketApplication.class, args);
-		}
+        public static void main(String[] args) throws Exception {
+            SpringApplication.run(StockMarketApplication.class, args);
+        }
 
-	}
+    }
 
 }

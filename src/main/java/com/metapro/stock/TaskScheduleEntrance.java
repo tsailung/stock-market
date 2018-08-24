@@ -1,10 +1,13 @@
 package com.metapro.stock;
 
+import com.alibaba.fastjson.JSON;
 import com.metapro.stock.entity.StockClearingPrice;
 import com.metapro.stock.entity.StockInfo;
+import com.metapro.stock.entity.StockQuote;
 import com.metapro.stock.service.GatewayService;
 import com.metapro.stock.service.ServiceException;
 import com.metapro.stock.service.StockQuoteService;
+import com.metapro.stock.utils.HttpClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +48,6 @@ public class TaskScheduleEntrance {
             calendar.set(Calendar.MILLISECOND, 0);
             System.out.println(Constants.DTFORMATT_LINE.format(calendar.getTime()));
 
-            StockInfo stockInfo = new StockInfo();
-            stockInfo.setCode("000063");
-            stockInfo.setName("中兴通讯");
-            stockList = new ArrayList<>();
-            stockList.add(stockInfo);
             for (StockInfo info : stockList) {
                 String code = info.getCode();
                 String name = info.getName();
@@ -76,6 +74,21 @@ public class TaskScheduleEntrance {
                 }
 
             }
+        } catch (ServiceException e) {
+            logger.error("", e);
+        }
+    }
+
+    @Scheduled(cron = "00 00 16 * * ?")
+    public void acquireCurrentQuote(){
+        try {
+            List<StockInfo> stockList = stockQuoteService.selectStockInfoList();
+            stockList.forEach(item -> {
+                String url = "http://web.juhe.cn:8080/finance/stock/hs?gid=sz002230&key=1534c8df285b90e949be0d62c19cc6a0";
+                String data = HttpClientUtil.doGet(url, "UTF-8");
+                JSON.parseObject(data, StockQuote.class);
+                System.out.println(data);
+            });
         } catch (ServiceException e) {
             logger.error("", e);
         }

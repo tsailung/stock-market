@@ -1,5 +1,9 @@
 package com.metapro.stock.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.metapro.stock.entity.StockQuote;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -112,6 +116,10 @@ public class HttpClientUtil {
 
         url = "http://web.juhe.cn:8080/finance/stock/hs?gid=sz002230&key=1534c8df285b90e949be0d62c19cc6a0";
         data = doGet(url, "UTF-8");
+        Map<String, Object> map = JSONObject.parseObject(data, Map.class);
+        JSONArray arr = (JSONArray) map.get("result");
+        StockQuote stockQuote = JSON.parseObject(((JSONObject)arr.get(0)).get("data").toString(), StockQuote.class);
+        System.out.println(stockQuote);
         System.out.println(data);
 
         //https://hq.sinajs.cn/?_=0.48335311859046626&list=sz002230,sz002230_i

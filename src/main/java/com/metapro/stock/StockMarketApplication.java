@@ -30,7 +30,7 @@ public class StockMarketApplication {
 }
 
 @Slf4j
-@Component
+//@Component
 class StockRunner implements CommandLineRunner{
 
 	@Autowired
